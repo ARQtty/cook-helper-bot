@@ -50,7 +50,7 @@ class EdaPageParser():
 
 
 	def _getTime(self, section):
-		# Парсит время приготовления блюда
+		# Парсит время приготовления блюда. Возвращает время в минутах
 		
 		def measure(string, index):
 			# Находит число справа от указанного индекса
@@ -62,17 +62,27 @@ class EdaPageParser():
 
 		mins = section.text.lower().find('мин')
 		hours = section.text.lower().find('час')
-		res = []
 
+		# Перевод в минуты
+		totalTime = 0
 		if hours != -1:
-			res.append(measure(section.text, hours)+ "час")
+			try:
+				hours = int(measure(section.text, hours))
+				totalTime += hours * 60
+			except Exception as e:
+				pass
 		if mins != -1:
-			res.append(measure(section.text, mins) + "мин.")
+			try:
+				mins = int(measure(section.text, mins))
+				totalTime += mins
+			except Exception as e:
+				pass
+			
 
-		if len(res) == 0:
-			res = ['н/д']
+		if totalTime == 0:
+			totalTime = None
 
-		return ' '.join(res)
+		return totalTime
 
 
 	def _getName(self, section):
